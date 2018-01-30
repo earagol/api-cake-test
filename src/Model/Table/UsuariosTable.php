@@ -7,6 +7,15 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use SoftDelete\Model\Table\SoftDeleteTrait;
 
+// use App\Model\Entity\Usuario;
+
+// use Cake\ORM\Query;
+// use Cake\ORM\RulesChecker;
+// use Cake\ORM\Table;
+// use Cake\Validation\Validator;
+// use SoftDelete\Model\Table\SoftDeleteTrait;
+
+
 /**
  * Usuarios Model
  *
@@ -45,13 +54,25 @@ class UsuariosTable extends Table
     }
 
 
-    public function beforeSave(\Cake\Event\Event $event)
+  /*  public function beforeSave(\Cake\Event\Event $event)
     {
         $entity = $event->data['entity'];
 
         if (isset($entity->password) && $entity->password) {
             $hasher = new \Cake\Auth\DefaultPasswordHasher();
             $entity->password = $hasher->hash($entity->password);
+        }
+
+        return true;
+    }*/
+
+     public function beforeSave(\Cake\Event\Event $event)
+    {
+        $entity = $event->data['entity'];
+
+        if (isset($entity->clave) && $entity->clave) {
+            $hasher = new \Cake\Auth\DefaultPasswordHasher();
+            $entity->clave = $hasher->hash($entity->clave);
         }
 
         return true;
@@ -74,10 +95,8 @@ class UsuariosTable extends Table
             ->maxLength('rut', 13)
             ->allowEmpty('rut');
 
-        $validator
-            ->scalar('clave')
-            ->maxLength('clave', 60)
-            ->allowEmpty('clave');
+
+        $validator->allowEmpty('clave');
 
         $validator
             ->scalar('nombre')
@@ -131,9 +150,8 @@ class UsuariosTable extends Table
             ->allowEmpty('direccion');
 
         $validator
-            ->boolean('sexo')
-            ->requirePresence('sexo', 'create')
-            ->notEmpty('sexo');
+            ->integer('sexo')
+            ->allowEmpty('sexo', 'create');
 
         $validator
             ->scalar('token')
@@ -164,7 +182,7 @@ class UsuariosTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->isUnique(['email']));
+        $rules->add($rules->isUnique(['email'],'Grupos', 'El grupo ingresado ya fue registrado.'));
 
         return $rules;
     }
