@@ -66,7 +66,7 @@ Router::scope('/', function (RouteBuilder $routes) {
             localhost/test_api/api/usuarios/view/100/60.json*/
             '/add' => [
                 'action' => 'add',
-                'method' => ['POST', 'OPTIONS']
+                'method' => ['POST']
             ],
             // localhost/test_api/api/usuarios/add.json
             '/edit/:userId' => [
@@ -77,7 +77,12 @@ Router::scope('/', function (RouteBuilder $routes) {
             '/delete/:userId' => [
                'action' => 'delete',
                'method' => ['DELETE']
-           ]
+           ],
+           '/existeUser' => [
+                'action' => 'existeUser',
+                'method' => ['POST']
+            ],
+            // localhost/test_api/api/usuarios/existeUser.json
         ]
     ]);
 

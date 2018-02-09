@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\Cache\Cache;
+use Cake\Event\Event;
 
 /**
  * Usuarios Controller
@@ -17,34 +18,6 @@ class UsuariosController extends AppController
     public function initialize(){
         parent::initialize();
         $this->loadComponent('RequestHandler');
-    }
-
-    public function sendResponse($respuesta)
-    {
-        // $this->response->header('Access-Control-Allow-Origin','*');
-        // $this->response->header('Access-Control-Allow-Methods','*');
-        // $this->response->header('Access-Control-Allow-Headers','Origin, X-Requested-With, Content-Type, Accept, Authorization');
-
-        $respuesta = (object) array(
-            'status' => isset($respuesta->status) ? $respuesta->status : true,
-            'code' => isset($respuesta->code) ? $respuesta->code : 200,
-            'succes' => isset($respuesta->succes) ? $respuesta->succes : false,
-            'message' => isset($respuesta->message) ? $respuesta->message : '',
-            'messages' => isset($respuesta->messages) ? $respuesta->messages : [],
-            'errors' => isset($respuesta->errors) ? $respuesta->errors : [],
-            'sessionid' => isset($respuesta->sessionid) ? $respuesta->sessionid : null,
-            'data' => isset($respuesta->data) ? $respuesta->data : []
-        );
-
-        $this->set([
-            // 'mensaje'=>$usuarios,
-            'respuesta'=>$respuesta,
-            '_serialize'=>['respuesta']
-        ]);
-        // $this->response->body(json_encode($respuesta));
-        // $this->response->body(json_encode($respuesta));
-        // $this->response->send();
-        // $this->response->stop();
     }
 
 
@@ -66,6 +39,33 @@ class UsuariosController extends AppController
             'success' => true,
             'message' => 'success',
             'data' => $usuarios
+        );
+        
+        $this->sendResponse($respuesta);
+       
+    }
+
+    public function existeUser()
+    {
+         
+        $band=false;
+        if(!isset($this->request->data['usuario']) || empty($this->request->data['usuario'])){
+            $mensaje ='Debe ingresar el usuario';
+        }else{
+            if($this->Usuarios->find()->where(['usuario'=>$this->request->data['usuario']])->first() != null){
+                $band=true;
+                $mensaje ='El rut o usuario ingresado ya se encuentran registrado';
+            }else{
+                $band=false;
+            }
+        }
+        
+        $usuarios = $this->paginate($this->Usuarios);
+
+        $respuesta = (object) array(
+            'success' => true,
+            'message' => 'success',
+            'data' => ['existe'=>$band]
         );
         
         $this->sendResponse($respuesta);
@@ -102,7 +102,7 @@ class UsuariosController extends AppController
                 $mensaje ='El rut o usuario ingresado ya se encuentran registrado';
             }else{
 
-                $this->request->data('nombre_despliegue',$this->request->data['nombre'].' '.$this->request->data['apellidos']);
+                $this->request->data('nombre_despliegue',$this->request->data['nombre'].' '.$this->request->data['apellidos']);   
                 $usuario = $this->Usuarios->newEntity();
                 if ($this->request->is('post')) {
                     $usuario = $this->Usuarios->patchEntity($usuario, $this->request->data);
@@ -175,7 +175,7 @@ class UsuariosController extends AppController
             $mensaje ='Debe ingresar el apellido';
         }else if(!isset($this->request->data['sexo']) || empty($this->request->data['sexo'])){
             $mensaje ='Debe ingresar el sexo';
-        }else if(!isset($this->request->data['email']) || empty($this->request->data['email'])){
+        }else if(!isset($this->request->data['email']) || empty($this->request->data['email'])){ 
             $mensaje ='Debe ingresar el email';
         }else{
             $id = $this->request->data['id'];

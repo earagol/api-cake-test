@@ -51,4 +51,34 @@ class AppController extends Controller
         //$this->loadComponent('Security');
         //$this->loadComponent('Csrf');
     }
+
+     public function beforeFilter(Event $event) 
+    { 
+        $this->request->data = $this->request->input ( 'json_decode', true) ;
+    } 
+
+
+    public function sendResponse($respuesta)
+    {
+        $this->response->header('Access-Control-Allow-Origin','*');
+        $this->response->header('Access-Control-Allow-Methods','*');
+        $this->response->header('Access-Control-Allow-Headers','Origin, X-Requested-With, Content-Type, Accept, Authorization');
+
+        $respuesta = (object) array(
+            'status' => isset($respuesta->status) ? $respuesta->status : true,
+            'code' => isset($respuesta->code) ? $respuesta->code : 200,
+            'message' => isset($respuesta->message) ? $respuesta->message : '',
+            'messages' => isset($respuesta->messages) ? $respuesta->messages : [],
+            'errors' => isset($respuesta->errors) ? $respuesta->errors : [],
+            'success' => isset($respuesta->success) ? $respuesta->success : [],
+            'sessionid' => isset($respuesta->sessionid) ? $respuesta->sessionid : null,
+            'data' => isset($respuesta->data) ? $respuesta->data : []
+        );
+
+        $this->response->body(json_encode($respuesta));
+        $this->response->send();
+        $this->response->stop();
+    }
+
+    
 }
