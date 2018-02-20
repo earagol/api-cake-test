@@ -41,12 +41,19 @@ use Cake\Routing\Route\DashedRoute;
  * `:action` markers.
  *
  */
-Router::defaultRouteClass(DashedRoute::class);
+// Router::defaultRouteClass(DashedRoute::class);
+/*Router::scope('/', function (RouteBuilder $routes) {
 
-Router::scope('/', function (RouteBuilder $routes) {
+
+}*/
+
+
+// Router::scope('/', function (RouteBuilder $routes) {
+Router::prefix('api', function ($routes) {
 
     $routes->extensions(['json']);
     // $routes->resources('Usuarios');
+
 
     $routes->resources('Usuarios', [
         'map' => [
@@ -82,15 +89,19 @@ Router::scope('/', function (RouteBuilder $routes) {
                 'action' => 'existeUser',
                 'method' => ['POST']
             ],
+            '/token' => [
+                'action' => 'token',
+                'method' => ['POST','GET']
+            ],
             // localhost/test_api/api/usuarios/existeUser.json
         ]
     ]);
 
-    // Router::scope('/user', function ($routes) {
-    //     $routes->resources('Usuarios', function ($routes) {
-    //         $routes->resources('Comments');
-    //     });
-    // });
+/*    Router::scope('/', function ($routes) {
+        $routes->resources('Usuarios', function ($routes) {
+            $routes->resources('Comments');
+        });
+    });*/
 
     // $routes->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
     // $routes->connect('/pages/*', ['controller' => 'Pages', 'action' => 'display']);
@@ -124,7 +135,7 @@ Router::scope('/', function (RouteBuilder $routes) {
      * You can remove these routes once you've connected the
      * routes you want in your application.
      */
-    $routes->fallbacks(DashedRoute::class);
+    // $routes->fallbacks(DashedRoute::class);
 });
 
 /**

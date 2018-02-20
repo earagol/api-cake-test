@@ -1,9 +1,21 @@
 <?php
-namespace App\Controller;
 
-use App\Controller\AppController;
+// namespace App\Controller\Api;
+
+// use App\Controller\Api\AppController;
+// namespace App\Controller;
+
+namespace App\Controller\Api;
+
+use App\Controller\Api\AppController;
+use Cake\ORM\TableRegistry;
+use Cake\Network\Exception\UnauthorizedException;
+use Cake\Utility\Security;
+use Firebase\JWT\JWT;
+
+/*use App\Controller\AppController;
 use Cake\Cache\Cache;
-use Cake\Event\Event;
+use Cake\Event\Event;*/
 
 /**
  * Usuarios Controller
@@ -17,7 +29,64 @@ class UsuariosController extends AppController
 
     public function initialize(){
         parent::initialize();
-        $this->loadComponent('RequestHandler');
+        // $this->loadComponent('RequestHandler');
+        $this->autoRender = false;
+        $this->Auth->allow(['add','token','existeUser']);
+    }
+
+    public function token()
+    {
+
+        if($this->request->is('POST')){
+             pr($this->request->data);
+        
+            $band=false;
+            $user = $this->Auth->identify();
+            // pr($this->Auth);
+            // pr($user);
+            
+            // exit('erisk');
+            if (!$user) {
+                // throw new UnauthorizedException('Invalid username or password');
+                $mensaje='Sin autorizacion';
+                // exit($mensaje);
+            }
+
+            // $user = $this->Auth->identify();
+            // if (!$user) {
+            //     throw new UnauthorizedException('Invalid username or password');
+            // }
+
+            // exit('A');
+            
+
+            $respuesta = (object) array(
+                'success' => true,
+                'message' => $mensaje,
+                'data' => [
+                    'token' => JWT::encode([
+                        'sub' => $user['id'],
+                        'exp' =>  time() + 604800
+                    ],
+                    Security::salt())
+                ],
+            );
+            
+            $this->sendResponse($respuesta);
+        }
+       
+
+       /* $this->set([
+            'success' => true,
+            'data' => [
+                'token' => JWT::encode([
+                    'sub' => $user['id'],
+                    'exp' =>  time() + 604800
+                ],
+                Security::salt())
+            ],
+            '_serialize' => ['success', 'data']
+        ]);*/
     }
 
 
@@ -30,7 +99,7 @@ class UsuariosController extends AppController
     {
         
         $this->paginate = [
-            'fields'=>[]
+            'fields'=>['id','rut','nombre','apellidos','usuario','nombre_despliegue','email','imagen','estado','telefono','celular','direccion','sexo','token','fecha_nacimiento','activo','created',]
         ];
         
         $usuarios = $this->paginate($this->Usuarios);
@@ -54,17 +123,17 @@ class UsuariosController extends AppController
         }else{
             if($this->Usuarios->find()->where(['usuario'=>$this->request->data['usuario']])->first() != null){
                 $band=true;
-                $mensaje ='El rut o usuario ingresado ya se encuentran registrado';
+                $mensaje ='El nombre de usuario ya esta siendo usado';
             }else{
-                $band=false;
+                $mensaje ='El nombre de usuario ya esta siendo usado';
             }
         }
         
         $usuarios = $this->paginate($this->Usuarios);
 
         $respuesta = (object) array(
-            'success' => true,
-            'message' => 'success',
+            'success' => $band,
+            'message' => $mensaje,
             'data' => ['existe'=>$band]
         );
         
@@ -163,11 +232,15 @@ class UsuariosController extends AppController
      */
     public function edit($id = null)
     {
+        /*pr($this->request->data);
+        exit;*/
+
+     /*   if(!isset($this->request->data['usuario']) || empty($this->request->data['usuario'])){
+            $mensaje ='Debe ingresar el usuario';
+        }else */
         
         $ok = false;
-        if(!isset($this->request->data['usuario']) || empty($this->request->data['usuario'])){
-            $mensaje ='Debe ingresar el usuario';
-        }else if(!isset($this->request->data['rut']) || empty($this->request->data['rut'])){
+        if(!isset($this->request->data['rut']) || empty($this->request->data['rut'])){
             $mensaje ='Debe ingresar el rut';
         }else if(!isset($this->request->data['nombre']) || empty($this->request->data['nombre'])){
             $mensaje ='Debe ingresar el nombre';

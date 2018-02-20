@@ -54,7 +54,7 @@ class AppController extends Controller
 
      public function beforeFilter(Event $event) 
     { 
-        $this->request->data = $this->request->input ( 'json_decode', true) ;
+        // $this->request->data = $this->request->input ( 'json_decode', true) ;
     } 
 
 

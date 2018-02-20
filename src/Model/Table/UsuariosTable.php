@@ -66,7 +66,17 @@ class UsuariosTable extends Table
         return true;
     }*/
 
-     public function beforeSave(\Cake\Event\Event $event)
+
+     public function findAuth(\Cake\ORM\Query $query, array $options)
+    {
+        // pr($query->toArray());
+        // exit;
+        $query->select(['id', 'email', 'clave','rut','nombre','apellidos','usuario','activo']);
+
+        return $query;
+    }
+
+ /*    public function beforeSave(\Cake\Event\Event $event)
     {
         $entity = $event->data['entity'];
 
@@ -76,7 +86,7 @@ class UsuariosTable extends Table
         }
 
         return true;
-    }
+    }*/
 
     /**
      * Default validation rules.
