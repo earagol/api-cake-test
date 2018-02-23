@@ -117,8 +117,8 @@ class AppController extends Controller
                 'Form' => [
                     'finder' => 'auth',
                     'fields' => [
-                        'usuario' => 'username',
-                        'clave' => 'password'
+                        'username' => 'usuario',
+                        'password' => 'clave'
                     ],
                     'userModel' => 'Usuarios'
                 ]
@@ -152,7 +152,7 @@ class AppController extends Controller
 
      public function beforeFilter(Event $event) 
     { 
-        // $this->request->data = $this->request->input ( 'json_decode', true) ;
+        $this->request->data = $this->request->input ( 'json_decode', true) ;
     } 
 
 

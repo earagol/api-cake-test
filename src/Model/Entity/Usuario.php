@@ -39,7 +39,7 @@ class Usuario extends Entity
      *
      * @var array
      */
-    protected $_accessible = [
+/*    protected $_accessible = [
         'rut' => true,
         'clave' => true,
         'nombre' => true,
@@ -59,6 +59,11 @@ class Usuario extends Entity
         'created' => true,
         'modified' => true,
         'deleted_at' => true
+    ];*/
+
+    protected $_accessible = [
+        '*' => true,
+        'id' => false
     ];
 
     /**
@@ -66,7 +71,7 @@ class Usuario extends Entity
      *
      * @var array
      */
-    protected $_hidden = [
+  /*  protected $_hidden = [
         'token'
-    ];
+    ];*/
 }

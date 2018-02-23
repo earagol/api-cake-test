@@ -31,7 +31,7 @@ class UsuariosController extends AppController
         parent::initialize();
         // $this->loadComponent('RequestHandler');
         $this->autoRender = false;
-        $this->Auth->allow(['add','token','existeUser']);
+        $this->Auth->allow(['add','token','existeUser','index']);
     }
 
     public function token()

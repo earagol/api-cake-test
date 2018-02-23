@@ -76,7 +76,7 @@ class UsuariosTable extends Table
         return $query;
     }
 
- /*    public function beforeSave(\Cake\Event\Event $event)
+     public function beforeSave(\Cake\Event\Event $event)
     {
         $entity = $event->data['entity'];
 
@@ -86,7 +86,7 @@ class UsuariosTable extends Table
         }
 
         return true;
-    }*/
+    }
 
     /**
      * Default validation rules.
