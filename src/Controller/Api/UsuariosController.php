@@ -31,7 +31,8 @@ class UsuariosController extends AppController
         parent::initialize();
         // $this->loadComponent('RequestHandler');
         $this->autoRender = false;
-        $this->Auth->allow(['add','token','existeUser','index']);
+
+        $this->Auth->allow(['add','token','existeUser','index','register']);
     }
 
     public function token()
@@ -88,6 +89,44 @@ class UsuariosController extends AppController
             '_serialize' => ['success', 'data']
         ]);*/
     }
+
+
+    //////////////////////////////////////////////////////////////////////////////
+
+    public function add2()
+    {
+        // exit('AA');
+        $this->Crud->on('afterSave', function(Event $event) {
+            if ($event->subject->created) {
+                // $respuesta = (object) array(
+                //     'success' => true,
+                //     'message' => $mensaje,
+                //     'data' => [
+                //         'token' => JWT::encode([
+                //             'sub' => $user['id'],
+                //             'exp' =>  time() + 604800
+                //         ],
+                //         Security::salt())
+                //     ],
+                // );
+
+                // $this->sendResponse($respuesta);
+                $this->set('data', [
+                    'id' => $event->subject->entity->id,
+                    'token' => JWT::encode(
+                        [
+                            'sub' => $event->subject->entity->id,
+                            'exp' =>  time() + 604800
+                        ],
+                    Security::salt())
+                ]);
+                $this->Crud->action()->config('serialize.data', 'data');
+            }
+        });
+        return $this->Crud->execute();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
 
     /**
@@ -170,6 +209,15 @@ class UsuariosController extends AppController
             if($this->Usuarios->find()->where(['rut'=>$this->request->data['rut']])->orWhere(['usuario'=>$this->request->data['usuario']])->first() != null){
                 $mensaje ='El rut o usuario ingresado ya se encuentran registrado';
             }else{
+
+                $data=[
+                        'token' => JWT::encode([
+                            'sub' => $user['id'],
+                            'exp' =>  time() + 604800
+                        ],
+                        Security::salt())
+                    ];
+
 
                 $this->request->data('nombre_despliegue',$this->request->data['nombre'].' '.$this->request->data['apellidos']);   
                 $usuario = $this->Usuarios->newEntity();

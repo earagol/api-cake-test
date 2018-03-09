@@ -20,44 +20,11 @@ class AppController extends Controller
 	*/
 	 public function initialize()
     {
+
         parent::initialize();
 
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
-
-        /*$this->loadComponent('Auth', [
-            'storage' => 'Memory',
-            'authenticate' => [
-                'ADmad/JwtAuth.Jwt' => [
-                    'userModel' => 'Usuarios',
-                    'fields' => [
-                        'username' => 'id'
-                    ],
-
-                    'parameter' => 'token',
-
-                    // Boolean indicating whether the "sub" claim of JWT payload
-                    // should be used to query the Users model and get user info.
-                    // If set to `false` JWT's payload is directly returned.
-                    'queryDatasource' => true,
-                ],
-                'Form' => [
-                    'finder' => 'auth',
-                    'fields' => [
-                        'username' => 'usuario',
-                        'password' => 'clavee'
-                    ],
-                    'userModel' => 'Usuarios'
-                ]
-            ],
-
-            'unauthorizedRedirect' => false,
-            'checkAuthIn' => 'Controller.initialize',
-
-            // If you don't have a login action in your application set
-            // 'loginAction' to false to prevent getting a MissingRouteException.
-            'loginAction' => false
-        ]);*/
 
          $this->loadComponent('Crud.Crud', [
             'actions' => [
@@ -74,85 +41,44 @@ class AppController extends Controller
             ]
         ]);
 
-
-       /* $this->loadComponent('Auth', [
-            // 'storage' => 'Memory',
-            'authorize' => ['Controller'],
-            'loginAction' => [
-                'prefix' => 'api',
-                'controller' => 'Usuarios',
-                'action' => 'token',
-                'plugin' => false
-            ],
+         $this->loadComponent('Auth', [
+            'storage' => 'Memory',
             'authenticate' => [
                 'Form' => [
-                    'finder' => 'auth',
-                    'userModel' => 'Usuarios',
-                    // 'scope' => ['Usuarios.activo' => 1],
                     'fields' => [
-                        'usuario' => 'username',
-                        'clave' => 'password'
-                    ],
-
+                        'username' => 'email',
+                        'password' => 'clave'
+                    ]
                 ],
                 'ADmad/JwtAuth.Jwt' => [
                     'parameter' => 'token',
                     'userModel' => 'Usuarios',
-                    'scope' => ['Usuarios.activo' => 1],
+                    'scope' => ['Usuarios.active' => 1],
                     'fields' => [
-                        'username' => 'usuario',
-                        'password' => 'clave'
+                        'username' => 'id'
                     ],
                     'queryDatasource' => true
                 ]
             ],
             'unauthorizedRedirect' => false,
             'checkAuthIn' => 'Controller.initialize'
-        ]);*/
-
-
-         $this->loadComponent('Auth', [
-            'authorize' => ['Controller'],
-            'authenticate' => [
-                'Form' => [
-                    'finder' => 'auth',
-                    'fields' => [
-                        'username' => 'usuario',
-                        'password' => 'clave'
-                    ],
-                    'userModel' => 'Usuarios'
-                ]
-            ],
-            'loginAction' => [
-                'controller' => 'Usuarios',
-                'action' => 'login'
-            ],
-            'authError' => false,
-            'loginRedirect' => [
-                'controller' => 'Usuarios',
-                'action' => 'home'
-            ],
-            'logoutRedirect' => [
-                'controller' => 'Usuarios',
-                'action' => 'login'
-            ],
-            // 'unauthorizedRedirect' => $this->referer()
-
         ]);
+
+
 
         /*
          * Enable the following components for recommended CakePHP security settings.
          * see https://book.cakephp.org/3.0/en/controllers/components/security.html
          */
-        //$this->loadComponent('Security');
-        //$this->loadComponent('Csrf');
+        // $this->loadComponent('Security');
+        // $this->loadComponent('Csrf');
     }
 
 
 
      public function beforeFilter(Event $event) 
     { 
-        $this->request->data = $this->request->input ( 'json_decode', true) ;
+        // $this->request->data = $this->request->input ( 'json_decode', true) ;
     } 
 
 

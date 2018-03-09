@@ -93,6 +93,10 @@ Router::prefix('api', function ($routes) {
                 'action' => 'token',
                 'method' => ['POST','GET']
             ],
+            '/register' => [
+                'action' => 'register',
+                'method' => ['POST']
+            ]
             // localhost/test_api/api/usuarios/existeUser.json
         ]
     ]);
