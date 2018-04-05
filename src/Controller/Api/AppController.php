@@ -2,11 +2,13 @@
 namespace App\Controller\Api;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
+use Cake\Core\Configure;
 class AppController extends Controller
 {
     use \Crud\Controller\ControllerTrait;
     public function initialize()
     {
+   
         parent::initialize();
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Crud.Crud', [
@@ -49,10 +51,16 @@ class AppController extends Controller
 
      public function beforeFilter(Event $event) 
     { 
-        
-        $this->request->data = $this->request->input ( 'json_decode', true);
+        header('Access-Control-Allow-Origin: *'); 
+        header('Access-Control-Allow-Methods: *'); 
+        header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization'); 
+
+        if(!Configure::read('postman')){
+            $this->request->data = $this->request->input ( 'json_decode', true);
+        }
+
+
 
     } 
-
 
 }

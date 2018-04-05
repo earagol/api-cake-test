@@ -38,23 +38,31 @@ class UsersController extends AppController
 
 	public function token()
 	{
-		// $this->request->data = $this->request->input ( 'json_decode', true) ;
-		// pr($this->request->data);
-		// exit;
+		
+		
 	    $user = $this->Auth->identify();
 	    if (!$user) {
-	        throw new UnauthorizedException('Invalid username or password');
-	    }
-	    $this->set([
-	        'success' => true,
-	        'data' => [
+	    	$success = false;
+	    	$mensaje = 'Usuario o contraseña invalidos.';
+	    	$data = false;
+	        // throw new UnauthorizedException('Invalid username or password');
+	    }else{
+	    	$success = true;
+			$mensaje = false;
+	    	$data = [
 	            'token' => JWT::encode([
 	                'sub' => $user['id'],
 	                'exp' =>  time() + 604800
 	            ],
 	            Security::salt())
-	        ],
-	        '_serialize' => ['success', 'data']
+	        ];
+	    }
+	    
+	    $this->set([
+	        'success' => $success,
+	        'message' => $mensaje,
+	        'data' => $data,
+	        '_serialize' => ['success', 'message', 'data']
 	    ]);
 	}
 
