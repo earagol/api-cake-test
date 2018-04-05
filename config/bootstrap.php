@@ -218,3 +218,37 @@ if (Configure::read('debug')) {
 Plugin::load('ADmad/JwtAuth');
 
 Plugin::load('Crud');
+
+function __token($id=0,$tiempo_expiracion=60){
+    return \Firebase\JWT\JWT::encode([
+        'sub' => $id,
+        'exp' =>  time() + $tiempo_expiracion,
+        'id' => $id
+        ],
+        Security::salt());
+}//end __token
+
+
+function __token_decode($token=null){
+    $now = time();
+    try{
+        return ['token'=>\Firebase\JWT\JWT::decode($token, Security::salt(), ['HS256']),'now'=>$now];
+    }catch(\Exception $e){
+        return 0;
+    }
+}//end __token_user_id
+
+function __token_user_id($token=null){
+    try{
+        $extract = __token_decode($token);
+        if(isset($extract['token'])){
+            if($extract['token']->exp>=$extract['now']){
+                return $extract['token']->id;
+            }
+        }
+        return 0;
+    }catch(\Exception $e){
+        return 0;
+    }
+
+}
