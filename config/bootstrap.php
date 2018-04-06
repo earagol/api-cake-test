@@ -219,6 +219,8 @@ Plugin::load('ADmad/JwtAuth');
 
 Plugin::load('Crud');
 
+Plugin::load('Cors', ['bootstrap' => true, 'routes' => false]);
+
 function __token($id=0,$tiempo_expiracion=60){
     return \Firebase\JWT\JWT::encode([
         'sub' => $id,
